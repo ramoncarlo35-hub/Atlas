@@ -53,9 +53,9 @@ def calculate_metrics(item, previous):
             "discount": 0.0,
             "movement": 0.0,
             "observations": 1,
-            "recurrence_score": 0.0,
             "drop_score": 0.0,
             "momentum_score": 0.0,
+            "recurrence_factor": 1.0,
             "score": 0.0
         }
 
@@ -82,25 +82,34 @@ def calculate_metrics(item, previous):
         previous_price - current
     ) / previous_price
 
-    recurrence_score = min(
-        len(previous) * 10,
-        30
-    )
-
+    # La caída aporta la señal principal.
     drop_score = max(
         0,
-        discount * 50
+        discount * 100
     )
 
+    # El movimiento reciente aporta una señal secundaria.
     momentum_score = max(
         0,
-        movement * 20
+        movement * 25
+    )
+
+    # La recurrencia refuerza progresivamente la señal,
+    # pero nunca puede crear una oportunidad por sí sola.
+    observations = len(previous)
+
+    recurrence_factor = min(
+        1.0 + (observations * 0.05),
+        1.50
+    )
+
+    base_score = (
+        drop_score
+        + momentum_score
     )
 
     score = round(
-        recurrence_score
-        + drop_score
-        + momentum_score,
+        base_score * recurrence_factor,
         2
     )
 
@@ -109,17 +118,11 @@ def calculate_metrics(item, previous):
         "current": current,
         "discount": round(discount, 4),
         "movement": round(movement, 4),
-        "observations": len(previous) + 1,
-        "recurrence_score": round(
-            recurrence_score,
-            2
-        ),
-        "drop_score": round(
-            drop_score,
-            2
-        ),
-        "momentum_score": round(
-            momentum_score,
+        "observations": observations + 1,
+        "drop_score": round(drop_score, 2),
+        "momentum_score": round(momentum_score, 2),
+        "recurrence_factor": round(
+            recurrence_factor,
             2
         ),
         "score": score
@@ -130,19 +133,20 @@ def detect_opportunities(data, history):
     opportunities = []
 
     for item in data:
+        previous = get_previous_observations(
+            history,
+            item["name"]
+        )
+
         metrics = calculate_metrics(
             item,
-            get_previous_observations(
-                history,
-                item["name"]
-            )
+            previous
         )
 
         if metrics is None:
             continue
 
-        # La señal PRICE_DROP requiere una caída
-        # mínima del 20 % respecto al máximo histórico.
+        # Umbral real de oportunidad.
         if metrics["discount"] >= 0.20:
             opportunities.append({
                 "name": item["name"],
