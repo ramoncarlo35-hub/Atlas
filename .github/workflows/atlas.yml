@@ -22,6 +22,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Test real data source
+        run: python atlas/source.py
+
       - name: Atlas dry run
         run: python atlas/run_once.py
 
