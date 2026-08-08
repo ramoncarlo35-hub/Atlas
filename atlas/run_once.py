@@ -32,32 +32,47 @@ def load_real_data():
     return json.loads(result.stdout)
 
 
+def get_previous_prices(history, name):
+    return [
+        observation["current"]
+        for observation in history.get("observations", [])
+        if observation["name"] == name
+        and observation["current"] >= 0
+    ]
+
+
 def detect_opportunities(data, history):
     opportunities = []
 
-    previous = {}
-
-    for observation in history.get("observations", []):
-        name = observation["name"]
-        previous.setdefault(name, []).append(observation)
-
     for item in data:
+        name = item["name"]
         current = item["current"]
-        observations = previous.get(item["name"], [])
 
-        if current < 0 or not observations:
+        if current < 0:
             continue
 
-        reference = observations[-1]["current"]
+        previous_prices = get_previous_prices(
+            history,
+            name
+        )
 
-        if reference <= 0:
+        if not previous_prices:
             continue
 
-        discount = (reference - current) / reference
+        historical_high = max(previous_prices)
+
+        if historical_high <= 0:
+            continue
+
+        discount = (
+            historical_high - current
+        ) / historical_high
 
         if discount >= 0.20:
+            observations = len(previous_prices)
+
             recurrence_score = min(
-                len(observations) * 20,
+                observations * 20,
                 40
             )
 
@@ -69,12 +84,15 @@ def detect_opportunities(data, history):
             )
 
             opportunities.append({
-                "name": item["name"],
-                "reference": reference,
+                "name": name,
+                "reference": historical_high,
                 "current": current,
                 "discount": round(discount, 4),
-                "observations": len(observations) + 1,
-                "price_score": round(price_score, 2),
+                "observations": observations + 1,
+                "price_score": round(
+                    price_score,
+                    2
+                ),
                 "recurrence_score": round(
                     recurrence_score,
                     2
