@@ -6,28 +6,44 @@ def detect_opportunities(data):
     opportunities = []
 
     for item in data:
-        if item["current"] < item["reference"]:
-            drop = (item["reference"] - item["current"]) / item["reference"]
+        reference = item["reference"]
+        current = item["current"]
 
-            if drop >= 0.20:
-                opportunities.append({
-                    "name": item["name"],
-                    "reference": item["reference"],
-                    "current": item["current"],
-                    "discount": round(drop, 4),
-                    "signal": "PRICE_DROP"
-                })
+        if reference <= 0 or current < 0:
+            continue
+
+        discount = (reference - current) / reference
+
+        if discount >= 0.20:
+            # Puntuación inicial:
+            # 20% de caída = 20 puntos
+            # 50% de caída = 50 puntos
+            score = round(discount * 100, 2)
+
+            opportunities.append({
+                "name": item["name"],
+                "reference": reference,
+                "current": current,
+                "discount": round(discount, 4),
+                "score": score,
+                "signal": "PRICE_DROP"
+            })
+
+    opportunities.sort(
+        key=lambda item: item["score"],
+        reverse=True
+    )
 
     return opportunities
 
 
 def run():
-    # Datos de prueba. Todavía no usamos ninguna fuente externa.
     data = [
         {"name": "producto_A", "reference": 100, "current": 95},
         {"name": "producto_B", "reference": 100, "current": 72},
         {"name": "producto_C", "reference": 200, "current": 150},
         {"name": "producto_D", "reference": 80, "current": 78},
+        {"name": "producto_E", "reference": 500, "current": 300},
     ]
 
     opportunities = detect_opportunities(data)
