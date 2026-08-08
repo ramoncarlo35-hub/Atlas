@@ -8,24 +8,35 @@ def detect_opportunities(data):
     for item in data:
         reference = item["reference"]
         current = item["current"]
+        observations = item["observations"]
 
-        if reference <= 0 or current < 0:
+        if reference <= 0 or current < 0 or observations < 0:
             continue
 
         discount = (reference - current) / reference
 
         if discount >= 0.20:
-            # Puntuación inicial:
-            # 20% de caída = 20 puntos
-            # 50% de caída = 50 puntos
-            score = round(discount * 100, 2)
+            # Componente de precio: máximo 60 puntos.
+            price_score = discount * 60
+
+            # Componente de recurrencia: máximo 40 puntos.
+            # 12 observaciones o más = máxima recurrencia.
+            recurrence_score = min(observations / 12, 1) * 40
+
+            total_score = round(
+                price_score + recurrence_score,
+                2
+            )
 
             opportunities.append({
                 "name": item["name"],
                 "reference": reference,
                 "current": current,
                 "discount": round(discount, 4),
-                "score": score,
+                "observations": observations,
+                "price_score": round(price_score, 2),
+                "recurrence_score": round(recurrence_score, 2),
+                "score": total_score,
                 "signal": "PRICE_DROP"
             })
 
@@ -39,16 +50,43 @@ def detect_opportunities(data):
 
 def run():
     data = [
-        {"name": "producto_A", "reference": 100, "current": 95},
-        {"name": "producto_B", "reference": 100, "current": 72},
-        {"name": "producto_C", "reference": 200, "current": 150},
-        {"name": "producto_D", "reference": 80, "current": 78},
-        {"name": "producto_E", "reference": 500, "current": 300},
+        {
+            "name": "producto_A",
+            "reference": 100,
+            "current": 95,
+            "observations": 2
+        },
+        {
+            "name": "producto_B",
+            "reference": 100,
+            "current": 72,
+            "observations": 6
+        },
+        {
+            "name": "producto_C",
+            "reference": 200,
+            "current": 150,
+            "observations": 12
+        },
+        {
+            "name": "producto_D",
+            "reference": 80,
+            "current": 78,
+            "observations": 1
+        },
+        {
+            "name": "producto_E",
+            "reference": 500,
+            "current": 300,
+            "observations": 2
+        },
     ]
 
     opportunities = detect_opportunities(data)
 
-    selected_opportunity = opportunities[0] if opportunities else None
+    selected_opportunity = (
+        opportunities[0] if opportunities else None
+    )
 
     return {
         "runtime": "ATLAS",
