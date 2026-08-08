@@ -4,6 +4,7 @@ from pathlib import Path
 
 
 HISTORY_FILE = Path(__file__).resolve().parent.parent / "history.json"
+INPUT_FILE = Path(__file__).resolve().parent.parent / "input.json"
 
 
 def load_history():
@@ -17,6 +18,11 @@ def load_history():
 def save_history(history):
     with open(HISTORY_FILE, "w", encoding="utf-8") as file:
         json.dump(history, file, ensure_ascii=False, indent=2)
+
+
+def load_input():
+    with open(INPUT_FILE, "r", encoding="utf-8") as file:
+        return json.load(file)["products"]
 
 
 def detect_opportunities(data, history):
@@ -38,20 +44,31 @@ def detect_opportunities(data, history):
         discount = (reference - current) / reference
 
         if discount >= 0.20:
-            observations = previous.get(item["name"], [])
+            recurrence_score = min(
+                len(previous.get(item["name"], [])) * 20,
+                40
+            )
 
-            recurrence_score = min(len(observations) * 20, 40)
             price_score = discount * 60
-            score = round(price_score + recurrence_score, 2)
+
+            score = round(
+                price_score + recurrence_score,
+                2
+            )
 
             opportunities.append({
                 "name": item["name"],
                 "reference": reference,
                 "current": current,
                 "discount": round(discount, 4),
-                "observations": len(observations) + 1,
+                "observations": len(
+                    previous.get(item["name"], [])
+                ) + 1,
                 "price_score": round(price_score, 2),
-                "recurrence_score": round(recurrence_score, 2),
+                "recurrence_score": round(
+                    recurrence_score,
+                    2
+                ),
                 "score": score,
                 "signal": "PRICE_DROP"
             })
@@ -65,19 +82,17 @@ def detect_opportunities(data, history):
 
 
 def run():
-    data = [
-        {"name": "producto_A", "reference": 100, "current": 95},
-        {"name": "producto_B", "reference": 100, "current": 72},
-        {"name": "producto_C", "reference": 200, "current": 150},
-        {"name": "producto_D", "reference": 80, "current": 78},
-        {"name": "producto_E", "reference": 500, "current": 300},
-    ]
-
+    data = load_input()
     history = load_history()
 
-    opportunities = detect_opportunities(data, history)
+    opportunities = detect_opportunities(
+        data,
+        history
+    )
 
-    timestamp = datetime.now(timezone.utc).isoformat()
+    timestamp = datetime.now(
+        timezone.utc
+    ).isoformat()
 
     for item in data:
         history["observations"].append({
@@ -89,7 +104,11 @@ def run():
 
     save_history(history)
 
-    selected = opportunities[0] if opportunities else None
+    selected = (
+        opportunities[0]
+        if opportunities
+        else None
+    )
 
     return {
         "runtime": "ATLAS",
@@ -98,7 +117,9 @@ def run():
         "status": "READY",
         "detector": {
             "enabled": True,
-            "opportunities_found": len(opportunities),
+            "opportunities_found": len(
+                opportunities
+            ),
             "action_taken": False,
             "selected_opportunity": selected,
             "opportunities": opportunities
