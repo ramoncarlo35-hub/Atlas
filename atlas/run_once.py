@@ -48,6 +48,8 @@ def run():
 
     opportunities = detect_opportunities(data)
 
+    selected_opportunity = opportunities[0] if opportunities else None
+
     return {
         "runtime": "ATLAS",
         "mode": "DRY_RUN",
@@ -57,6 +59,7 @@ def run():
             "enabled": True,
             "opportunities_found": len(opportunities),
             "action_taken": False,
+            "selected_opportunity": selected_opportunity,
             "opportunities": opportunities
         }
     }
