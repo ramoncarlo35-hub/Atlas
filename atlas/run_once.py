@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 HISTORY_FILE = Path(__file__).resolve().parent.parent / "history.json"
-INPUT_FILE = Path(__file__).resolve().parent.parent / "input.json"
+SOURCE_FILE = Path(__file__).resolve().parent.parent / "source.py"
 
 
 def load_history():
@@ -20,9 +20,17 @@ def save_history(history):
         json.dump(history, file, ensure_ascii=False, indent=2)
 
 
-def load_input():
-    with open(INPUT_FILE, "r", encoding="utf-8") as file:
-        return json.load(file)["products"]
+def load_real_data():
+    import subprocess
+
+    result = subprocess.run(
+        ["python", str(SOURCE_FILE)],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+
+    return json.loads(result.stdout)
 
 
 def detect_opportunities(data, history):
@@ -35,17 +43,26 @@ def detect_opportunities(data, history):
         previous.setdefault(name, []).append(observation)
 
     for item in data:
-        reference = item["reference"]
         current = item["current"]
 
-        if reference <= 0 or current < 0:
+        if current < 0:
+            continue
+
+        observations = previous.get(item["name"], [])
+
+        if observations:
+            reference = observations[-1]["current"]
+        else:
+            reference = current
+
+        if reference <= 0:
             continue
 
         discount = (reference - current) / reference
 
         if discount >= 0.20:
             recurrence_score = min(
-                len(previous.get(item["name"], [])) * 20,
+                len(observations) * 20,
                 40
             )
 
@@ -61,9 +78,7 @@ def detect_opportunities(data, history):
                 "reference": reference,
                 "current": current,
                 "discount": round(discount, 4),
-                "observations": len(
-                    previous.get(item["name"], [])
-                ) + 1,
+                "observations": len(observations) + 1,
                 "price_score": round(price_score, 2),
                 "recurrence_score": round(
                     recurrence_score,
@@ -82,7 +97,7 @@ def detect_opportunities(data, history):
 
 
 def run():
-    data = load_input()
+    data = load_real_data()
     history = load_history()
 
     opportunities = detect_opportunities(
@@ -98,7 +113,7 @@ def run():
         history["observations"].append({
             "timestamp": timestamp,
             "name": item["name"],
-            "reference": item["reference"],
+            "reference": item["current"],
             "current": item["current"]
         })
 
