@@ -1,4 +1,5 @@
 import json
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -21,8 +22,6 @@ def save_history(history):
 
 
 def load_real_data():
-    import subprocess
-
     result = subprocess.run(
         ["python", str(SOURCE_FILE)],
         capture_output=True,
@@ -44,16 +43,12 @@ def detect_opportunities(data, history):
 
     for item in data:
         current = item["current"]
-
-        if current < 0:
-            continue
-
         observations = previous.get(item["name"], [])
 
-        if observations:
-            reference = observations[-1]["current"]
-        else:
-            reference = current
+        if current < 0 or not observations:
+            continue
+
+        reference = observations[-1]["current"]
 
         if reference <= 0:
             continue
@@ -113,7 +108,6 @@ def run():
         history["observations"].append({
             "timestamp": timestamp,
             "name": item["name"],
-            "reference": item["current"],
             "current": item["current"]
         })
 
