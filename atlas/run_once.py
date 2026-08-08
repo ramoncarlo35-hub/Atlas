@@ -32,12 +32,11 @@ def load_real_data():
     return json.loads(result.stdout)
 
 
-def get_previous_prices(history, name):
+def get_previous_observations(history, name):
     return [
-        observation["current"]
+        observation
         for observation in history.get("observations", [])
         if observation["name"] == name
-        and observation["current"] >= 0
     ]
 
 
@@ -51,10 +50,19 @@ def detect_opportunities(data, history):
         if current < 0:
             continue
 
-        previous_prices = get_previous_prices(
+        previous = get_previous_observations(
             history,
             name
         )
+
+        if not previous:
+            continue
+
+        previous_prices = [
+            observation["current"]
+            for observation in previous
+            if observation["current"] >= 0
+        ]
 
         if not previous_prices:
             continue
@@ -68,37 +76,58 @@ def detect_opportunities(data, history):
             historical_high - current
         ) / historical_high
 
+        previous_price = previous[-1]["current"]
+
+        movement = (
+            previous_price - current
+        ) / previous_price
+
+        recurrence_score = min(
+            len(previous) * 10,
+            30
+        )
+
+        drop_score = max(
+            0,
+            discount * 50
+        )
+
+        momentum_score = max(
+            0,
+            movement * 20
+        )
+
+        score = round(
+            recurrence_score
+            + drop_score
+            + momentum_score,
+            2
+        )
+
         if discount >= 0.20:
-            observations = len(previous_prices)
-
-            recurrence_score = min(
-                observations * 20,
-                40
-            )
-
-            price_score = discount * 60
-
-            score = round(
-                price_score + recurrence_score,
-                2
-            )
+            signal = "PRICE_DROP"
 
             opportunities.append({
                 "name": name,
                 "reference": historical_high,
                 "current": current,
                 "discount": round(discount, 4),
-                "observations": observations + 1,
-                "price_score": round(
-                    price_score,
-                    2
-                ),
+                "movement": round(movement, 4),
+                "observations": len(previous) + 1,
                 "recurrence_score": round(
                     recurrence_score,
                     2
                 ),
+                "drop_score": round(
+                    drop_score,
+                    2
+                ),
+                "momentum_score": round(
+                    momentum_score,
+                    2
+                ),
                 "score": score,
-                "signal": "PRICE_DROP"
+                "signal": signal
             })
 
     opportunities.sort(
