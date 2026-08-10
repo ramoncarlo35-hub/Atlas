@@ -2,6 +2,7 @@ import json
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
+from statistics import mean
 
 
 HISTORY_FILE = Path(__file__).resolve().parent.parent / "history.json"
@@ -18,7 +19,12 @@ def load_history():
 
 def save_history(history):
     with open(HISTORY_FILE, "w", encoding="utf-8") as file:
-        json.dump(history, file, ensure_ascii=False, indent=2)
+        json.dump(
+            history,
+            file,
+            ensure_ascii=False,
+            indent=2
+        )
 
 
 def load_real_data():
@@ -42,19 +48,29 @@ def get_previous_observations(history, name):
 
 def calculate_metrics(item, previous):
     current = item["current"]
+    current_volume = item.get("volume_24h", 0)
 
     if current < 0:
         return None
 
+    if current_volume < 0:
+        current_volume = 0
+
+    # Primera observación:
+    # todavía no tenemos histórico suficiente
+    # para calcular movimiento o anomalía de volumen.
     if not previous:
         return {
             "reference": current,
             "current": current,
+            "volume_24h": current_volume,
             "discount": 0.0,
             "movement": 0.0,
+            "volume_ratio": 1.0,
             "observations": 1,
             "drop_score": 0.0,
             "momentum_score": 0.0,
+            "volume_score": 0.0,
             "recurrence_factor": 1.0,
             "score": 0.0
         }
@@ -62,7 +78,13 @@ def calculate_metrics(item, previous):
     previous_prices = [
         observation["current"]
         for observation in previous
-        if observation["current"] >= 0
+        if observation.get("current", -1) >= 0
+    ]
+
+    previous_volumes = [
+        observation["volume_24h"]
+        for observation in previous
+        if observation.get("volume_24h", 0) > 0
     ]
 
     if not previous_prices:
@@ -74,6 +96,10 @@ def calculate_metrics(item, previous):
     if historical_high <= 0 or previous_price <= 0:
         return None
 
+    # -------------------------------------------------
+    # 1. PRECIO
+    # -------------------------------------------------
+
     discount = (
         historical_high - current
     ) / historical_high
@@ -82,30 +108,66 @@ def calculate_metrics(item, previous):
         previous_price - current
     ) / previous_price
 
-    # La caída aporta la señal principal.
+    # La caída respecto al máximo es la señal principal.
     drop_score = max(
         0,
         discount * 100
     )
 
-    # El movimiento reciente aporta una señal secundaria.
+    # Movimiento entre observaciones consecutivas.
     momentum_score = max(
         0,
         movement * 25
     )
 
-    # La recurrencia refuerza progresivamente la señal,
-    # pero nunca puede crear una oportunidad por sí sola.
+    # -------------------------------------------------
+    # 2. VOLUMEN
+    # -------------------------------------------------
+
+    if previous_volumes and current_volume > 0:
+        average_volume = mean(previous_volumes)
+
+        if average_volume > 0:
+            volume_ratio = (
+                current_volume / average_volume
+            )
+        else:
+            volume_ratio = 1.0
+    else:
+        volume_ratio = 1.0
+
+    # Solo premiamos volumen por encima de su media.
+    # 1.0 = volumen normal.
+    # 2.0 = el doble de la media.
+    volume_score = max(
+        0,
+        min(
+            (volume_ratio - 1.0) * 20,
+            30
+        )
+    )
+
+    # -------------------------------------------------
+    # 3. RECURRENCIA
+    # -------------------------------------------------
+
     observations = len(previous)
 
+    # La recurrencia refuerza, pero nunca crea,
+    # una señal por sí sola.
     recurrence_factor = min(
         1.0 + (observations * 0.05),
         1.50
     )
 
+    # -------------------------------------------------
+    # 4. SCORE
+    # -------------------------------------------------
+
     base_score = (
         drop_score
         + momentum_score
+        + volume_score
     )
 
     score = round(
@@ -116,11 +178,26 @@ def calculate_metrics(item, previous):
     return {
         "reference": historical_high,
         "current": current,
+        "volume_24h": current_volume,
         "discount": round(discount, 4),
         "movement": round(movement, 4),
+        "volume_ratio": round(
+            volume_ratio,
+            4
+        ),
         "observations": observations + 1,
-        "drop_score": round(drop_score, 2),
-        "momentum_score": round(momentum_score, 2),
+        "drop_score": round(
+            drop_score,
+            2
+        ),
+        "momentum_score": round(
+            momentum_score,
+            2
+        ),
+        "volume_score": round(
+            volume_score,
+            2
+        ),
         "recurrence_factor": round(
             recurrence_factor,
             2
@@ -146,7 +223,9 @@ def detect_opportunities(data, history):
         if metrics is None:
             continue
 
-        # Umbral real de oportunidad.
+        # Mantenemos el umbral de seguridad:
+        # no existe oportunidad PRICE_DROP
+        # hasta una caída mínima del 20 %.
         if metrics["discount"] >= 0.20:
             opportunities.append({
                 "name": item["name"],
@@ -210,11 +289,16 @@ def run():
         timezone.utc
     ).isoformat()
 
+    # Guardamos precio Y volumen.
     for item in data:
         history["observations"].append({
             "timestamp": timestamp,
             "name": item["name"],
-            "current": item["current"]
+            "current": item["current"],
+            "volume_24h": item.get(
+                "volume_24h",
+                0
+            )
         })
 
     save_history(history)
