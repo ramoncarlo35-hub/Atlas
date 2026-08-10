@@ -42,8 +42,155 @@ def get_previous_observations(history, name):
     return [
         observation
         for observation in history.get("observations", [])
-        if observation["name"] == name
+        if observation.get("name") == name
     ]
+
+
+def get_price_series(previous, current):
+    prices = [
+        observation["current"]
+        for observation in previous
+        if observation.get("current", -1) >= 0
+    ]
+
+    prices.append(current)
+
+    return prices
+
+
+def calculate_trend_metrics(prices):
+    """
+    Analiza las últimas variaciones de precio.
+
+    direction_streak:
+        positivo = número de movimientos consecutivos al alza
+        negativo = número de movimientos consecutivos a la baja
+
+    acceleration:
+        compara la magnitud del último movimiento
+        con la magnitud media de los movimientos anteriores.
+    """
+
+    if len(prices) < 2:
+        return {
+            "direction": "UNKNOWN",
+            "direction_streak": 0,
+            "trend_score": 0.0,
+            "acceleration": 0.0,
+            "acceleration_score": 0.0
+        }
+
+    movements = []
+
+    for previous_price, current_price in zip(
+        prices[:-1],
+        prices[1:]
+    ):
+        if previous_price <= 0:
+            continue
+
+        movements.append(
+            (current_price - previous_price)
+            / previous_price
+        )
+
+    if not movements:
+        return {
+            "direction": "UNKNOWN",
+            "direction_streak": 0,
+            "trend_score": 0.0,
+            "acceleration": 0.0,
+            "acceleration_score": 0.0
+        }
+
+    last_movement = movements[-1]
+
+    if last_movement < 0:
+        direction = "DOWN"
+        direction_streak = 1
+
+        for movement in reversed(movements[:-1]):
+            if movement < 0:
+                direction_streak += 1
+            else:
+                break
+
+    elif last_movement > 0:
+        direction = "UP"
+        direction_streak = 1
+
+        for movement in reversed(movements[:-1]):
+            if movement > 0:
+                direction_streak += 1
+            else:
+                break
+
+    else:
+        direction = "FLAT"
+        direction_streak = 0
+
+    # Solo utilizamos movimientos anteriores al actual
+    # para establecer una referencia de velocidad.
+    previous_movements = movements[:-1]
+
+    if previous_movements:
+        average_abs_movement = mean(
+            abs(value)
+            for value in previous_movements
+        )
+    else:
+        average_abs_movement = 0.0
+
+    if average_abs_movement > 0:
+        acceleration = (
+            abs(last_movement)
+            / average_abs_movement
+        )
+    else:
+        acceleration = 1.0
+
+    # La persistencia aporta hasta 20 puntos.
+    trend_score = min(
+        direction_streak * 4,
+        20
+    )
+
+    # Solo premiamos aceleración cuando existe.
+    # No permitimos que este factor domine el sistema.
+    acceleration_score = min(
+        max(acceleration - 1.0, 0)
+        * 10,
+        20
+    )
+
+    # Si el último movimiento es hacia abajo,
+    # la aceleración es relevante para una posible caída.
+    # Para movimientos alcistas la información también
+    # se conserva, pero no genera una señal de venta.
+    if direction == "DOWN":
+        acceleration_score = round(
+            acceleration_score,
+            2
+        )
+    else:
+        acceleration_score = 0.0
+
+    return {
+        "direction": direction,
+        "direction_streak": direction_streak,
+        "trend_score": round(
+            trend_score,
+            2
+        ),
+        "acceleration": round(
+            acceleration,
+            4
+        ),
+        "acceleration_score": round(
+            acceleration_score,
+            2
+        )
+    }
 
 
 def calculate_metrics(item, previous):
@@ -56,9 +203,14 @@ def calculate_metrics(item, previous):
     if current_volume < 0:
         current_volume = 0
 
-    # Primera observación:
-    # todavía no tenemos histórico suficiente
-    # para calcular movimiento o anomalía de volumen.
+    prices = get_price_series(
+        previous,
+        current
+    )
+
+    trend = calculate_trend_metrics(prices)
+
+    # Primera observación.
     if not previous:
         return {
             "reference": current,
@@ -71,6 +223,13 @@ def calculate_metrics(item, previous):
             "drop_score": 0.0,
             "momentum_score": 0.0,
             "volume_score": 0.0,
+            "trend_score": trend["trend_score"],
+            "direction": trend["direction"],
+            "direction_streak": trend["direction_streak"],
+            "acceleration": trend["acceleration"],
+            "acceleration_score": trend[
+                "acceleration_score"
+            ],
             "recurrence_factor": 1.0,
             "score": 0.0
         }
@@ -82,7 +241,7 @@ def calculate_metrics(item, previous):
     ]
 
     previous_volumes = [
-        observation["volume_24h"]
+        observation.get("volume_24h", 0)
         for observation in previous
         if observation.get("volume_24h", 0) > 0
     ]
@@ -96,49 +255,51 @@ def calculate_metrics(item, previous):
     if historical_high <= 0 or previous_price <= 0:
         return None
 
-    # -------------------------------------------------
-    # 1. PRECIO
-    # -------------------------------------------------
+    # -----------------------------
+    # 1. CAÍDA RESPECTO AL MÁXIMO
+    # -----------------------------
 
     discount = (
         historical_high - current
     ) / historical_high
 
-    movement = (
-        previous_price - current
-    ) / previous_price
-
-    # La caída respecto al máximo es la señal principal.
     drop_score = max(
         0,
         discount * 100
     )
 
-    # Movimiento entre observaciones consecutivas.
+    # -----------------------------
+    # 2. MOVIMIENTO RECIENTE
+    # -----------------------------
+
+    movement = (
+        previous_price - current
+    ) / previous_price
+
     momentum_score = max(
         0,
         movement * 25
     )
 
-    # -------------------------------------------------
-    # 2. VOLUMEN
-    # -------------------------------------------------
+    # -----------------------------
+    # 3. VOLUMEN
+    # -----------------------------
 
     if previous_volumes and current_volume > 0:
-        average_volume = mean(previous_volumes)
+        average_volume = mean(
+            previous_volumes
+        )
 
         if average_volume > 0:
             volume_ratio = (
-                current_volume / average_volume
+                current_volume
+                / average_volume
             )
         else:
             volume_ratio = 1.0
     else:
         volume_ratio = 1.0
 
-    # Solo premiamos volumen por encima de su media.
-    # 1.0 = volumen normal.
-    # 2.0 = el doble de la media.
     volume_score = max(
         0,
         min(
@@ -147,27 +308,37 @@ def calculate_metrics(item, previous):
         )
     )
 
-    # -------------------------------------------------
-    # 3. RECURRENCIA
-    # -------------------------------------------------
+    # -----------------------------
+    # 4. RECURRENCIA
+    # -----------------------------
 
     observations = len(previous)
 
-    # La recurrencia refuerza, pero nunca crea,
-    # una señal por sí sola.
     recurrence_factor = min(
         1.0 + (observations * 0.05),
         1.50
     )
 
-    # -------------------------------------------------
-    # 4. SCORE
-    # -------------------------------------------------
+    # -----------------------------
+    # 5. TENDENCIA
+    # -----------------------------
+
+    trend_score = trend["trend_score"]
+
+    acceleration_score = trend[
+        "acceleration_score"
+    ]
+
+    # -----------------------------
+    # 6. SCORE TOTAL
+    # -----------------------------
 
     base_score = (
         drop_score
         + momentum_score
         + volume_score
+        + trend_score
+        + acceleration_score
     )
 
     score = round(
@@ -179,8 +350,14 @@ def calculate_metrics(item, previous):
         "reference": historical_high,
         "current": current,
         "volume_24h": current_volume,
-        "discount": round(discount, 4),
-        "movement": round(movement, 4),
+        "discount": round(
+            discount,
+            4
+        ),
+        "movement": round(
+            movement,
+            4
+        ),
         "volume_ratio": round(
             volume_ratio,
             4
@@ -196,6 +373,21 @@ def calculate_metrics(item, previous):
         ),
         "volume_score": round(
             volume_score,
+            2
+        ),
+        "trend_score": round(
+            trend_score,
+            2
+        ),
+        "direction": trend["direction"],
+        "direction_streak": trend[
+            "direction_streak"
+        ],
+        "acceleration": trend[
+            "acceleration"
+        ],
+        "acceleration_score": round(
+            acceleration_score,
             2
         ),
         "recurrence_factor": round(
@@ -223,9 +415,7 @@ def detect_opportunities(data, history):
         if metrics is None:
             continue
 
-        # Mantenemos el umbral de seguridad:
-        # no existe oportunidad PRICE_DROP
-        # hasta una caída mínima del 20 %.
+        # Mantenemos el filtro duro del 20%.
         if metrics["discount"] >= 0.20:
             opportunities.append({
                 "name": item["name"],
@@ -289,7 +479,7 @@ def run():
         timezone.utc
     ).isoformat()
 
-    # Guardamos precio Y volumen.
+    # Guardamos precio y volumen.
     for item in data:
         history["observations"].append({
             "timestamp": timestamp,
