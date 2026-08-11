@@ -3,7 +3,8 @@ from pathlib import Path
 from statistics import mean, pstdev
 
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
+# backtest.py está en la raíz del repositorio Atlas.
+ROOT_DIR = Path(__file__).resolve().parent
 HISTORY_FILE = ROOT_DIR / "history.json"
 
 WINDOW_SIZE = 12
@@ -11,12 +12,8 @@ WINDOW_SIZE = 12
 ANOMALY_Z_THRESHOLD = -1.5
 VOLUME_CONFIRMATION_RATIO = 1.20
 
-# Número de observaciones posteriores que utilizamos
-# para comprobar qué ocurrió después de una señal.
 FORWARD_WINDOW = 3
 
-# Mínimo de observaciones por activo antes de considerar
-# que el backtest tiene una muestra razonable.
 MIN_OBSERVATIONS_FOR_BACKTEST = 12
 
 
@@ -66,7 +63,6 @@ def calculate_z_score(prices, current):
         return 0.0
 
     average = mean(prices)
-
     deviation = pstdev(prices)
 
     if deviation == 0:
@@ -108,8 +104,8 @@ def reconstruct_signal(
     index
 ):
     """
-    Reconstruye retrospectivamente la señal
-    que Atlas habría generado en esta observación.
+    Reconstruye retrospectivamente
+    la señal que Atlas habría generado.
     """
 
     if index < 3:
@@ -195,25 +191,24 @@ def calculate_future_return(
 ):
     """
     Calcula el rendimiento posterior
-    después de una señal.
-
-    Utiliza hasta FORWARD_WINDOW
-    observaciones futuras.
+    utilizando FORWARD_WINDOW observaciones.
     """
+
+    future_index = (
+        signal_index
+        + FORWARD_WINDOW
+    )
+
+    # No evaluamos señales que todavía
+    # no tienen suficientes datos futuros.
+    if future_index >= len(observations):
+        return None
 
     current_price = float(
         observations[
             signal_index
         ]["current"]
     )
-
-    future_index = min(
-        signal_index + FORWARD_WINDOW,
-        len(observations) - 1
-    )
-
-    if future_index <= signal_index:
-        return None
 
     future_price = float(
         observations[
@@ -265,9 +260,11 @@ def analyze_asset(
 
         if signal == "ANOMALOUS_DROP":
 
-            future_return = calculate_future_return(
-                observations,
-                index
+            future_return = (
+                calculate_future_return(
+                    observations,
+                    index
+                )
             )
 
             if future_return is not None:
@@ -335,19 +332,16 @@ def analyze_asset(
         observations_count
         < MIN_OBSERVATIONS_FOR_BACKTEST
     ):
-
         sample_status = (
             "INSUFFICIENT_SAMPLE"
         )
 
     elif signals_with_valid_forward_window < 3:
-
         sample_status = (
             "TOO_FEW_VALID_SIGNALS"
         )
 
     else:
-
         sample_status = (
             "SAMPLE_AVAILABLE"
         )
@@ -464,10 +458,8 @@ def run():
             if (
                 signal[
                     "future_return"
-                ]
-                is not None
+                ] is not None
             ):
-
                 all_returns.append(
                     signal[
                         "future_return"
@@ -499,6 +491,10 @@ def run():
 
         sample_status = "NO_DATA"
 
+        explanation = (
+            "No market data available."
+        )
+
     elif any(
         asset["sample_status"]
         == "INSUFFICIENT_SAMPLE"
@@ -509,33 +505,17 @@ def run():
             "INSUFFICIENT_SAMPLE"
         )
 
-    elif total_valid_signals < 3:
-
-        sample_status = (
-            "TOO_FEW_VALID_SIGNALS"
-        )
-
-    else:
-
-        sample_status = (
-            "SAMPLE_AVAILABLE"
-        )
-
-    if sample_status == "NO_DATA":
-
-        explanation = (
-            "No market data available."
-        )
-
-    elif sample_status == "INSUFFICIENT_SAMPLE":
-
         explanation = (
             "Atlas needs more historical "
             "observations before signal "
             "performance can be evaluated."
         )
 
-    elif sample_status == "TOO_FEW_VALID_SIGNALS":
+    elif total_valid_signals < 3:
+
+        sample_status = (
+            "TOO_FEW_VALID_SIGNALS"
+        )
 
         explanation = (
             "Atlas has too few signals "
@@ -544,6 +524,10 @@ def run():
         )
 
     else:
+
+        sample_status = (
+            "SAMPLE_AVAILABLE"
+        )
 
         explanation = (
             "Atlas has enough observations "
