@@ -3,7 +3,7 @@ from pathlib import Path
 from statistics import mean, pstdev
 
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = Path(__file__).resolve().parent
 HISTORY_FILE = ROOT_DIR / "history.json"
 
 WINDOW_SIZE = 12
@@ -11,8 +11,6 @@ WINDOW_SIZE = 12
 ANOMALY_Z_THRESHOLD = -1.5
 VOLUME_CONFIRMATION_RATIO = 1.20
 
-# Cuántas observaciones posteriores utilizamos
-# para comprobar qué ocurrió después de una señal.
 FORWARD_WINDOW = 3
 
 
@@ -52,10 +50,7 @@ def group_by_asset(observations):
     return grouped
 
 
-def calculate_z_score(
-    prices,
-    current
-):
+def calculate_z_score(prices, current):
     if len(prices) < 3:
         return 0.0
 
@@ -188,25 +183,27 @@ def calculate_future_return(
 ):
     """
     Calcula el rendimiento posterior
-    después de una señal.
-
-    Se utilizan hasta FORWARD_WINDOW
+    usando exactamente FORWARD_WINDOW
     observaciones futuras.
+
+    Si no existen suficientes observaciones
+    futuras, no se utiliza esa señal para
+    calcular el resultado.
     """
+
+    future_index = (
+        signal_index
+        + FORWARD_WINDOW
+    )
+
+    if future_index >= len(observations):
+        return None
 
     current_price = float(
         observations[
             signal_index
         ]["current"]
     )
-
-    future_index = min(
-        signal_index + FORWARD_WINDOW,
-        len(observations) - 1
-    )
-
-    if future_index <= signal_index:
-        return None
 
     future_price = float(
         observations[
@@ -252,9 +249,11 @@ def analyze_asset(
 
         if signal == "ANOMALOUS_DROP":
 
-            future_return = calculate_future_return(
-                observations,
-                index
+            future_return = (
+                calculate_future_return(
+                    observations,
+                    index
+                )
             )
 
             signals.append({
@@ -316,6 +315,9 @@ def analyze_asset(
         "signals_found": len(
             signals
         ),
+        "signals_with_valid_forward_window": len(
+            valid_returns
+        ),
         "signal_counts": signal_counts,
         "average_future_return": (
             round(
@@ -353,7 +355,6 @@ def run():
 
     total_observations = 0
     total_signals = 0
-
     all_returns = []
 
     for name, asset_observations in grouped.items():
@@ -383,8 +384,7 @@ def run():
             if (
                 signal[
                     "future_return"
-                ]
-                is not None
+                ] is not None
             ):
                 all_returns.append(
                     signal[
@@ -434,6 +434,9 @@ def run():
             ),
             "signals_found": (
                 total_signals
+            ),
+            "signals_with_valid_forward_window": len(
+                all_returns
             ),
             "overall_average_future_return": (
                 round(
