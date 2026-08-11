@@ -11,7 +11,10 @@ SOURCE_URL = (
 
 
 def fetch_data():
-    with urlopen(SOURCE_URL, timeout=15) as response:
+    with urlopen(
+        SOURCE_URL,
+        timeout=15
+    ) as response:
         return json.loads(
             response.read().decode("utf-8")
         )
@@ -31,7 +34,19 @@ def normalize_data(raw):
     ]
 
 
-if __name__ == "__main__":
+def main():
     raw = fetch_data()
     data = normalize_data(raw)
-    print(json.dumps(data))
+
+    print(
+        json.dumps(
+            data,
+            ensure_ascii=False,
+            indent=2
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()
+
