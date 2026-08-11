@@ -23,7 +23,7 @@ jobs:
           python-version: "3.12"
 
       - name: Atlas market collector
-        run: python atlas/collector.py
+        run: python collector.py
 
       - name: Atlas dry run
         run: python atlas/run_once.py
