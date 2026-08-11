@@ -11,7 +11,7 @@ permissions:
 jobs:
   atlas:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -25,6 +25,9 @@ jobs:
       - name: Atlas market collector
         run: python collector.py
 
+      - name: Atlas market analysis
+        run: python analyze_market_data.py
+
       - name: Atlas dry run
         run: python atlas/run_once.py
 
@@ -36,11 +39,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add history.json market_data.json
+          git add history.json market_data.json analysis_report.json analysis_report.md
 
           if git diff --cached --quiet; then
             echo "No history changes to commit."
           else
-            git commit -m "Collect Atlas market data"
+            git commit -m "Analyze Atlas market data"
             git push
           fi
