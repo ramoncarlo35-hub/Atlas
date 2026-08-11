@@ -28,6 +28,9 @@ jobs:
       - name: Atlas dry run
         run: python atlas/run_once.py
 
+      - name: Atlas backtest
+        run: python backtest.py
+
       - name: Save Atlas history
         run: |
           git config user.name "github-actions[bot]"
