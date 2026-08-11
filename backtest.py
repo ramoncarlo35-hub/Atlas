@@ -3,7 +3,7 @@ from pathlib import Path
 from statistics import mean, pstdev
 
 
-ROOT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = Path(__file__).resolve().parent.parent
 HISTORY_FILE = ROOT_DIR / "history.json"
 
 WINDOW_SIZE = 12
@@ -11,7 +11,13 @@ WINDOW_SIZE = 12
 ANOMALY_Z_THRESHOLD = -1.5
 VOLUME_CONFIRMATION_RATIO = 1.20
 
+# Número de observaciones posteriores que utilizamos
+# para comprobar qué ocurrió después de una señal.
 FORWARD_WINDOW = 3
+
+# Mínimo de observaciones por activo antes de considerar
+# que el backtest tiene una muestra razonable.
+MIN_OBSERVATIONS_FOR_BACKTEST = 12
 
 
 def load_history():
@@ -27,6 +33,11 @@ def load_history():
         encoding="utf-8"
     ) as file:
         history = json.load(file)
+
+    history.setdefault(
+        "observations",
+        []
+    )
 
     history.setdefault(
         "market_observations",
@@ -55,6 +66,7 @@ def calculate_z_score(prices, current):
         return 0.0
 
     average = mean(prices)
+
     deviation = pstdev(prices)
 
     if deviation == 0:
@@ -183,27 +195,25 @@ def calculate_future_return(
 ):
     """
     Calcula el rendimiento posterior
-    usando exactamente FORWARD_WINDOW
+    después de una señal.
+
+    Utiliza hasta FORWARD_WINDOW
     observaciones futuras.
-
-    Si no existen suficientes observaciones
-    futuras, no se utiliza esa señal para
-    calcular el resultado.
     """
-
-    future_index = (
-        signal_index
-        + FORWARD_WINDOW
-    )
-
-    if future_index >= len(observations):
-        return None
 
     current_price = float(
         observations[
             signal_index
         ]["current"]
     )
+
+    future_index = min(
+        signal_index + FORWARD_WINDOW,
+        len(observations) - 1
+    )
+
+    if future_index <= signal_index:
+        return None
 
     future_price = float(
         observations[
@@ -230,6 +240,10 @@ def analyze_asset(
 
     signals = []
 
+    usable_observations = 0
+
+    signals_with_valid_forward_window = 0
+
     for index in range(
         len(observations)
     ):
@@ -241,6 +255,8 @@ def analyze_asset(
         if result is None:
             continue
 
+        usable_observations += 1
+
         signal = result["signal"]
 
         signal_counts[
@@ -249,12 +265,13 @@ def analyze_asset(
 
         if signal == "ANOMALOUS_DROP":
 
-            future_return = (
-                calculate_future_return(
-                    observations,
-                    index
-                )
+            future_return = calculate_future_return(
+                observations,
+                index
             )
+
+            if future_return is not None:
+                signals_with_valid_forward_window += 1
 
             signals.append({
                 "index": index,
@@ -289,6 +306,7 @@ def analyze_asset(
     ]
 
     if valid_returns:
+
         average_future_return = mean(
             valid_returns
         )
@@ -303,22 +321,60 @@ def analyze_asset(
             positive_outcomes
             / len(valid_returns)
         )
+
     else:
+
         average_future_return = None
         success_rate = None
 
+    observations_count = len(
+        observations
+    )
+
+    if (
+        observations_count
+        < MIN_OBSERVATIONS_FOR_BACKTEST
+    ):
+
+        sample_status = (
+            "INSUFFICIENT_SAMPLE"
+        )
+
+    elif signals_with_valid_forward_window < 3:
+
+        sample_status = (
+            "TOO_FEW_VALID_SIGNALS"
+        )
+
+    else:
+
+        sample_status = (
+            "SAMPLE_AVAILABLE"
+        )
+
     return {
         "name": name,
-        "observations_analyzed": len(
-            observations
+
+        "observations_analyzed": (
+            observations_count
         ),
+
+        "usable_observations": (
+            usable_observations
+        ),
+
         "signals_found": len(
             signals
         ),
-        "signals_with_valid_forward_window": len(
-            valid_returns
+
+        "signals_with_valid_forward_window": (
+            signals_with_valid_forward_window
         ),
+
         "signal_counts": signal_counts,
+
+        "sample_status": sample_status,
+
         "average_future_return": (
             round(
                 average_future_return,
@@ -327,6 +383,7 @@ def analyze_asset(
             if average_future_return is not None
             else None
         ),
+
         "positive_outcome_rate": (
             round(
                 success_rate,
@@ -335,11 +392,13 @@ def analyze_asset(
             if success_rate is not None
             else None
         ),
+
         "signals": signals
     }
 
 
 def run():
+
     history = load_history()
 
     observations = history.get(
@@ -354,7 +413,13 @@ def run():
     assets = []
 
     total_observations = 0
+
+    total_usable_observations = 0
+
     total_signals = 0
+
+    total_valid_signals = 0
+
     all_returns = []
 
     for name, asset_observations in grouped.items():
@@ -374,18 +439,35 @@ def run():
             ]
         )
 
+        total_usable_observations += (
+            result[
+                "usable_observations"
+            ]
+        )
+
         total_signals += (
             result[
                 "signals_found"
             ]
         )
 
-        for signal in result["signals"]:
+        total_valid_signals += (
+            result[
+                "signals_with_valid_forward_window"
+            ]
+        )
+
+        for signal in result[
+            "signals"
+        ]:
+
             if (
                 signal[
                     "future_return"
-                ] is not None
+                ]
+                is not None
             ):
+
                 all_returns.append(
                     signal[
                         "future_return"
@@ -393,6 +475,7 @@ def run():
                 )
 
     if all_returns:
+
         overall_average_return = mean(
             all_returns
         )
@@ -405,39 +488,128 @@ def run():
             )
             / len(all_returns)
         )
+
     else:
+
         overall_average_return = None
+
         overall_positive_rate = None
+
+    if not assets:
+
+        sample_status = "NO_DATA"
+
+    elif any(
+        asset["sample_status"]
+        == "INSUFFICIENT_SAMPLE"
+        for asset in assets
+    ):
+
+        sample_status = (
+            "INSUFFICIENT_SAMPLE"
+        )
+
+    elif total_valid_signals < 3:
+
+        sample_status = (
+            "TOO_FEW_VALID_SIGNALS"
+        )
+
+    else:
+
+        sample_status = (
+            "SAMPLE_AVAILABLE"
+        )
+
+    if sample_status == "NO_DATA":
+
+        explanation = (
+            "No market data available."
+        )
+
+    elif sample_status == "INSUFFICIENT_SAMPLE":
+
+        explanation = (
+            "Atlas needs more historical "
+            "observations before signal "
+            "performance can be evaluated."
+        )
+
+    elif sample_status == "TOO_FEW_VALID_SIGNALS":
+
+        explanation = (
+            "Atlas has too few signals "
+            "with a valid forward window "
+            "to evaluate performance."
+        )
+
+    else:
+
+        explanation = (
+            "Atlas has enough observations "
+            "and valid signals to evaluate "
+            "performance."
+        )
 
     return {
         "runtime": "ATLAS",
+
         "mode": "BACKTEST",
+
         "status": "READY",
+
         "parameters": {
             "window_size": WINDOW_SIZE,
+
             "anomaly_z_threshold": (
                 ANOMALY_Z_THRESHOLD
             ),
+
             "volume_confirmation_ratio": (
                 VOLUME_CONFIRMATION_RATIO
             ),
+
             "forward_window": (
                 FORWARD_WINDOW
+            ),
+
+            "minimum_observations_for_backtest": (
+                MIN_OBSERVATIONS_FOR_BACKTEST
             )
         },
+
+        "sample_quality": {
+            "status": sample_status,
+
+            "ready_for_signal_evaluation": (
+                sample_status
+                == "SAMPLE_AVAILABLE"
+            ),
+
+            "explanation": explanation
+        },
+
         "summary": {
             "assets_analyzed": len(
                 assets
             ),
+
             "observations_analyzed": (
                 total_observations
             ),
+
+            "usable_observations": (
+                total_usable_observations
+            ),
+
             "signals_found": (
                 total_signals
             ),
-            "signals_with_valid_forward_window": len(
-                all_returns
+
+            "signals_with_valid_forward_window": (
+                total_valid_signals
             ),
+
             "overall_average_future_return": (
                 round(
                     overall_average_return,
@@ -446,6 +618,7 @@ def run():
                 if overall_average_return is not None
                 else None
             ),
+
             "overall_positive_outcome_rate": (
                 round(
                     overall_positive_rate,
@@ -455,6 +628,7 @@ def run():
                 else None
             )
         },
+
         "assets": assets
     }
 
