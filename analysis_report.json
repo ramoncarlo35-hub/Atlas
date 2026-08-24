@@ -1,6 +1,6 @@
 {
   "capital_eur": 40.0,
-  "total_samples": 477,
+  "total_samples": 360,
   "scenarios": {
     "standard": {
       "scenario": "OKX standard EEA + Kraken Tier 1",
@@ -8,38 +8,38 @@
       "kraken_taker_fee_pct": 0.8,
       "total_taker_fee_pct": 1.15,
       "okx_to_kraken": {
-        "samples": 477,
-        "positive_samples": 170,
-        "max_gross_spread_pct": 0.039138590521520085,
-        "mean_gross_spread_pct": -0.002908450945272352,
-        "median_gross_spread_pct": -0.002059716325576554,
-        "p95_gross_spread_pct": 0.020059217342883885,
+        "samples": 360,
+        "positive_samples": 80,
+        "max_gross_spread_pct": 0.03197271661515628,
+        "mean_gross_spread_pct": -0.006034380308727366,
+        "median_gross_spread_pct": -0.005332152082499505,
+        "p95_gross_spread_pct": 0.009061403669527405,
         "best_trade": {
           "buy_exchange": "OKX",
           "sell_exchange": "Kraken",
-          "buy_price": 77672.7,
-          "sell_price": 77703.1,
-          "quantity": 0.0005149814542303795,
+          "buy_price": 93.83,
+          "sell_price": 93.86,
+          "quantity": 0.4263028882020676,
           "capital_used": 40.0,
-          "gross_spread_pct": 0.039138590521520085,
-          "gross_profit": 0.0156554362086041,
+          "gross_spread_pct": 0.03197271661515628,
+          "gross_profit": 0.012789086646058934,
           "buy_fee": 0.13999999999999999,
-          "sell_fee": 0.32012524348966886,
-          "net_profit": -0.4444698072810648,
-          "net_profit_pct": -1.1111745182026618
+          "sell_fee": 0.32010231269316847,
+          "net_profit": -0.44731322604710955,
+          "net_profit_pct": -1.1182830651177738
         },
         "thresholds": {
           "0.00%": {
-            "count": 212,
-            "max_net_profit": -0.44162944999999776
+            "count": 111,
+            "max_net_profit": -0.011534856655000078
           },
           "0.01%": {
-            "count": 70,
-            "max_net_profit": -0.44162944999999776
+            "count": 17,
+            "max_net_profit": -0.44731322604710955
           },
           "0.02%": {
-            "count": 24,
-            "max_net_profit": -0.44162944999999776
+            "count": 5,
+            "max_net_profit": -0.44731322604710955
           },
           "0.05%": {
             "count": 0,
@@ -64,110 +64,110 @@
         },
         "by_pair": {
           "BTC/USDT": {
-            "samples": 159,
-            "positive_samples": 55,
-            "max_gross_spread_pct": 0.039138590521520085,
-            "mean_gross_spread_pct": -0.0007617051527766774,
-            "median_gross_spread_pct": -0.003089029697170489,
-            "p95_gross_spread_pct": 0.025450234575649024,
+            "samples": 120,
+            "positive_samples": 23,
+            "max_gross_spread_pct": 0.026983585417970433,
+            "mean_gross_spread_pct": -0.005486138082175552,
+            "median_gross_spread_pct": -0.005844588606288732,
+            "p95_gross_spread_pct": 0.0089935452835964,
             "best_trade": {
               "buy_exchange": "OKX",
               "sell_exchange": "Kraken",
-              "buy_price": 77672.7,
-              "sell_price": 77703.1,
-              "quantity": 0.0005149814542303795,
-              "capital_used": 40.0,
-              "gross_spread_pct": 0.039138590521520085,
-              "gross_profit": 0.0156554362086041,
-              "buy_fee": 0.13999999999999999,
-              "sell_fee": 0.32012524348966886,
-              "net_profit": -0.4444698072810648,
-              "net_profit_pct": -1.1111745182026618
+              "buy_price": 77083.9,
+              "sell_price": 77104.7,
+              "quantity": 0.0005189151041916665,
+              "capital_used": 39.99999999999999,
+              "gross_spread_pct": 0.026983585417970433,
+              "gross_profit": 0.010793434167190696,
+              "buy_fee": 0.13999999999999996,
+              "sell_fee": 0.3200863474733375,
+              "net_profit": -0.44929291330614674,
+              "net_profit_pct": -1.1232322832653672
             }
           },
           "ETH/USDT": {
-            "samples": 159,
-            "positive_samples": 100,
-            "max_gross_spread_pct": 0.035734734568062664,
-            "mean_gross_spread_pct": 0.002247664308445833,
-            "median_gross_spread_pct": 0.0024376272136679964,
-            "p95_gross_spread_pct": 0.018798843943873912,
+            "samples": 120,
+            "positive_samples": 50,
+            "max_gross_spread_pct": 0.02422679565723152,
+            "mean_gross_spread_pct": -0.0008103153768047625,
+            "median_gross_spread_pct": -0.0004105073482699235,
+            "p95_gross_spread_pct": 0.009027105896120154,
             "best_trade": {
               "buy_exchange": "OKX",
               "sell_exchange": "Kraken",
-              "buy_price": 2462.59,
-              "sell_price": 2463.47,
-              "quantity": 0.01624306116730759,
+              "buy_price": 2435.32,
+              "sell_price": 2435.91,
+              "quantity": 0.016424946208301167,
               "capital_used": 40.0,
-              "gross_spread_pct": 0.035734734568062664,
-              "gross_profit": 0.014293893827229454,
+              "gross_spread_pct": 0.02422679565723152,
+              "gross_profit": 0.00969071826289536,
               "buy_fee": 0.13999999999999999,
-              "sell_fee": 0.3201143511506178,
-              "net_profit": -0.4458204573233884,
-              "net_profit_pct": -1.114551143308471
+              "sell_fee": 0.32007752574610315,
+              "net_profit": -0.4503868074832078,
+              "net_profit_pct": -1.1259670187080195
             }
           },
           "SOL/USDT": {
-            "samples": 159,
-            "positive_samples": 15,
-            "max_gross_spread_pct": 0.03146633102580358,
-            "mean_gross_spread_pct": -0.010211311991486212,
-            "median_gross_spread_pct": -0.01047559187093118,
-            "p95_gross_spread_pct": 0.01048503822464947,
+            "samples": 120,
+            "positive_samples": 7,
+            "max_gross_spread_pct": 0.03197271661515628,
+            "mean_gross_spread_pct": -0.011806687467201786,
+            "median_gross_spread_pct": -0.010655301012243906,
+            "p95_gross_spread_pct": 0.010641298781184734,
             "best_trade": {
               "buy_exchange": "OKX",
               "sell_exchange": "Kraken",
-              "buy_price": 95.34,
-              "sell_price": 95.37,
-              "quantity": 0.4195510803440319,
+              "buy_price": 93.83,
+              "sell_price": 93.86,
+              "quantity": 0.4263028882020676,
               "capital_used": 40.0,
-              "gross_spread_pct": 0.03146633102580358,
-              "gross_profit": 0.01258653241032448,
+              "gross_spread_pct": 0.03197271661515628,
+              "gross_profit": 0.012789086646058934,
               "buy_fee": 0.13999999999999999,
-              "sell_fee": 0.3201006922592826,
-              "net_profit": -0.44751415984895815,
-              "net_profit_pct": -1.1187853996223953
+              "sell_fee": 0.32010231269316847,
+              "net_profit": -0.44731322604710955,
+              "net_profit_pct": -1.1182830651177738
             }
           }
         }
       },
       "kraken_to_okx": {
-        "samples": 477,
-        "positive_samples": 72,
-        "max_gross_spread_pct": 0.056087197582579094,
-        "mean_gross_spread_pct": -0.01054375829960118,
-        "median_gross_spread_pct": -0.010147215806926896,
-        "p95_gross_spread_pct": 0.00820161296494956,
+        "samples": 360,
+        "positive_samples": 49,
+        "max_gross_spread_pct": 0.04266211604094714,
+        "mean_gross_spread_pct": -0.009203144211268442,
+        "median_gross_spread_pct": -0.00903387025833078,
+        "p95_gross_spread_pct": 0.007924352608508552,
         "best_trade": {
           "buy_exchange": "Kraken",
           "sell_exchange": "OKX",
-          "buy_price": 77736.1,
-          "sell_price": 77779.7,
-          "quantity": 0.0005145614457118378,
+          "buy_price": 93.76,
+          "sell_price": 93.8,
+          "quantity": 0.4266211604095563,
           "capital_used": 40.0,
-          "gross_spread_pct": 0.056087197582579094,
-          "gross_profit": 0.022434879033035315,
+          "gross_spread_pct": 0.04266211604094714,
+          "gross_profit": 0.017064846416374735,
           "buy_fee": 0.32,
-          "sell_fee": 0.1400785220766156,
-          "net_profit": -0.4376436430435803,
-          "net_profit_pct": -1.0941091076089506
+          "sell_fee": 0.1400597269624573,
+          "net_profit": -0.4429948805460826,
+          "net_profit_pct": -1.1074872013652066
         },
         "thresholds": {
           "0.00%": {
-            "count": 86,
-            "max_net_profit": -0.4376436430435803
+            "count": 62,
+            "max_net_profit": -0.4429948805460826
           },
           "0.01%": {
-            "count": 22,
-            "max_net_profit": -0.4376436430435803
+            "count": 15,
+            "max_net_profit": -0.4429948805460826
           },
           "0.02%": {
-            "count": 9,
-            "max_net_profit": -0.4376436430435803
+            "count": 7,
+            "max_net_profit": -0.4429948805460826
           },
           "0.05%": {
-            "count": 1,
-            "max_net_profit": -0.4376436430435803
+            "count": 0,
+            "max_net_profit": null
           },
           "0.10%": {
             "count": 0,
@@ -188,69 +188,69 @@
         },
         "by_pair": {
           "BTC/USDT": {
-            "samples": 159,
-            "positive_samples": 30,
-            "max_gross_spread_pct": 0.056087197582579094,
-            "mean_gross_spread_pct": -0.008147509819592296,
-            "median_gross_spread_pct": -0.007584190946782349,
-            "p95_gross_spread_pct": 0.0049284446216481155,
+            "samples": 120,
+            "positive_samples": 33,
+            "max_gross_spread_pct": 0.026066624216530995,
+            "mean_gross_spread_pct": -0.00412732070483787,
+            "median_gross_spread_pct": -0.004025540104215919,
+            "p95_gross_spread_pct": 0.009488158622286613,
             "best_trade": {
               "buy_exchange": "Kraken",
               "sell_exchange": "OKX",
-              "buy_price": 77736.1,
-              "sell_price": 77779.7,
-              "quantity": 0.0005145614457118378,
-              "capital_used": 40.0,
-              "gross_spread_pct": 0.056087197582579094,
-              "gross_profit": 0.022434879033035315,
-              "buy_fee": 0.32,
-              "sell_fee": 0.1400785220766156,
-              "net_profit": -0.4376436430435803,
-              "net_profit_pct": -1.0941091076089506
+              "buy_price": 77110.1,
+              "sell_price": 77130.2,
+              "quantity": 0.0005187387903789517,
+              "capital_used": 40.00000000000001,
+              "gross_spread_pct": 0.026066624216530995,
+              "gross_profit": 0.010426649686607448,
+              "buy_fee": 0.32000000000000006,
+              "sell_fee": 0.14003649327390313,
+              "net_profit": -0.4496098435872957,
+              "net_profit_pct": -1.124024608968239
             }
           },
           "ETH/USDT": {
-            "samples": 159,
-            "positive_samples": 33,
-            "max_gross_spread_pct": 0.04262315045972851,
-            "mean_gross_spread_pct": -0.0062202682044826315,
-            "median_gross_spread_pct": -0.006091716889491827,
-            "p95_gross_spread_pct": 0.008572321527519512,
+            "samples": 120,
+            "positive_samples": 9,
+            "max_gross_spread_pct": 0.017647034682572373,
+            "mean_gross_spread_pct": -0.008126011870280874,
+            "median_gross_spread_pct": -0.007798007001989913,
+            "p95_gross_spread_pct": 0.0012733279205201285,
             "best_trade": {
               "buy_exchange": "Kraken",
               "sell_exchange": "OKX",
-              "buy_price": 2463.45,
-              "sell_price": 2464.5,
-              "quantity": 0.016237390651322334,
+              "buy_price": 2436.67,
+              "sell_price": 2437.1,
+              "quantity": 0.016415846216352645,
               "capital_used": 40.0,
-              "gross_spread_pct": 0.04262315045972851,
-              "gross_profit": 0.017049260183888748,
+              "gross_spread_pct": 0.017647034682572373,
+              "gross_profit": 0.00705881387303009,
               "buy_fee": 0.32,
-              "sell_fee": 0.1400596724106436,
-              "net_profit": -0.44301041222675486,
-              "net_profit_pct": -1.1075260305668873
+              "sell_fee": 0.1400247058485556,
+              "net_profit": -0.4529658919755255,
+              "net_profit_pct": -1.1324147299388136
             }
           },
           "SOL/USDT": {
-            "samples": 159,
-            "positive_samples": 9,
-            "max_gross_spread_pct": 0.04191993292809897,
-            "mean_gross_spread_pct": -0.017263496874728612,
-            "median_gross_spread_pct": -0.020944601528951747,
-            "p95_gross_spread_pct": 0.010473617000240621,
+            "samples": 120,
+            "positive_samples": 7,
+            "max_gross_spread_pct": 0.04266211604094714,
+            "mean_gross_spread_pct": -0.01535610005868658,
+            "median_gross_spread_pct": -0.021283388315415583,
+            "p95_gross_spread_pct": 0.010639091267669824,
             "best_trade": {
               "buy_exchange": "Kraken",
               "sell_exchange": "OKX",
-              "buy_price": 95.42,
-              "sell_price": 95.46,
-              "quantity": 0.4191993292810731,
+              "buy_price": 93.76,
+              "sell_price": 93.8,
+              "quantity": 0.4266211604095563,
               "capital_used": 40.0,
-              "gross_spread_pct": 0.04191993292809897,
-              "gross_profit": 0.01676797317123402,
+              "gross_spread_pct": 0.04266211604094714,
+              "gross_profit": 0.017064846416374735,
               "buy_fee": 0.32,
-              "sell_fee": 0.1400586879060993,
-              "net_profit": -0.44329071473486525,
-              "net_profit_pct": -1.1082267868371631
+              "sell_fee": 0.1400597269624573,
+              "net_profit": -0.4429948805460826,
+              "net_profit_pct": -1.1074872013652066
             }
           }
         }
@@ -262,38 +262,38 @@
       "kraken_taker_fee_pct": 0.8,
       "total_taker_fee_pct": 0.9,
       "okx_to_kraken": {
-        "samples": 477,
-        "positive_samples": 170,
-        "max_gross_spread_pct": 0.039138590521520085,
-        "mean_gross_spread_pct": -0.002908450945272352,
-        "median_gross_spread_pct": -0.002059716325576554,
-        "p95_gross_spread_pct": 0.020059217342883885,
+        "samples": 360,
+        "positive_samples": 80,
+        "max_gross_spread_pct": 0.03197271661515628,
+        "mean_gross_spread_pct": -0.006034380308727366,
+        "median_gross_spread_pct": -0.005332152082499505,
+        "p95_gross_spread_pct": 0.009061403669527405,
         "best_trade": {
           "buy_exchange": "OKX",
           "sell_exchange": "Kraken",
-          "buy_price": 77672.7,
-          "sell_price": 77703.1,
-          "quantity": 0.0005149814542303795,
+          "buy_price": 93.83,
+          "sell_price": 93.86,
+          "quantity": 0.4263028882020676,
           "capital_used": 40.0,
-          "gross_spread_pct": 0.039138590521520085,
-          "gross_profit": 0.0156554362086041,
+          "gross_spread_pct": 0.03197271661515628,
+          "gross_profit": 0.012789086646058934,
           "buy_fee": 0.04,
-          "sell_fee": 0.32012524348966886,
-          "net_profit": -0.34446980728106474,
-          "net_profit_pct": -0.8611745182026618
+          "sell_fee": 0.32010231269316847,
+          "net_profit": -0.3473132260471095,
+          "net_profit_pct": -0.8682830651177738
         },
         "thresholds": {
           "0.00%": {
-            "count": 212,
-            "max_net_profit": -0.34385469999999774
+            "count": 111,
+            "max_net_profit": -0.009019263330000079
           },
           "0.01%": {
-            "count": 70,
-            "max_net_profit": -0.34385469999999774
+            "count": 17,
+            "max_net_profit": -0.3473132260471095
           },
           "0.02%": {
-            "count": 24,
-            "max_net_profit": -0.34385469999999774
+            "count": 5,
+            "max_net_profit": -0.3473132260471095
           },
           "0.05%": {
             "count": 0,
@@ -318,110 +318,110 @@
         },
         "by_pair": {
           "BTC/USDT": {
-            "samples": 159,
-            "positive_samples": 55,
-            "max_gross_spread_pct": 0.039138590521520085,
-            "mean_gross_spread_pct": -0.0007617051527766774,
-            "median_gross_spread_pct": -0.003089029697170489,
-            "p95_gross_spread_pct": 0.025450234575649024,
+            "samples": 120,
+            "positive_samples": 23,
+            "max_gross_spread_pct": 0.026983585417970433,
+            "mean_gross_spread_pct": -0.005486138082175552,
+            "median_gross_spread_pct": -0.005844588606288732,
+            "p95_gross_spread_pct": 0.0089935452835964,
             "best_trade": {
               "buy_exchange": "OKX",
               "sell_exchange": "Kraken",
-              "buy_price": 77672.7,
-              "sell_price": 77703.1,
-              "quantity": 0.0005149814542303795,
-              "capital_used": 40.0,
-              "gross_spread_pct": 0.039138590521520085,
-              "gross_profit": 0.0156554362086041,
-              "buy_fee": 0.04,
-              "sell_fee": 0.32012524348966886,
-              "net_profit": -0.34446980728106474,
-              "net_profit_pct": -0.8611745182026618
+              "buy_price": 77083.9,
+              "sell_price": 77104.7,
+              "quantity": 0.0005189151041916665,
+              "capital_used": 39.99999999999999,
+              "gross_spread_pct": 0.026983585417970433,
+              "gross_profit": 0.010793434167190696,
+              "buy_fee": 0.039999999999999994,
+              "sell_fee": 0.3200863474733375,
+              "net_profit": -0.34929291330614676,
+              "net_profit_pct": -0.8732322832653671
             }
           },
           "ETH/USDT": {
-            "samples": 159,
-            "positive_samples": 100,
-            "max_gross_spread_pct": 0.035734734568062664,
-            "mean_gross_spread_pct": 0.002247664308445833,
-            "median_gross_spread_pct": 0.0024376272136679964,
-            "p95_gross_spread_pct": 0.018798843943873912,
+            "samples": 120,
+            "positive_samples": 50,
+            "max_gross_spread_pct": 0.02422679565723152,
+            "mean_gross_spread_pct": -0.0008103153768047625,
+            "median_gross_spread_pct": -0.0004105073482699235,
+            "p95_gross_spread_pct": 0.009027105896120154,
             "best_trade": {
               "buy_exchange": "OKX",
               "sell_exchange": "Kraken",
-              "buy_price": 2462.59,
-              "sell_price": 2463.47,
-              "quantity": 0.01624306116730759,
+              "buy_price": 2435.32,
+              "sell_price": 2435.91,
+              "quantity": 0.016424946208301167,
               "capital_used": 40.0,
-              "gross_spread_pct": 0.035734734568062664,
-              "gross_profit": 0.014293893827229454,
+              "gross_spread_pct": 0.02422679565723152,
+              "gross_profit": 0.00969071826289536,
               "buy_fee": 0.04,
-              "sell_fee": 0.3201143511506178,
-              "net_profit": -0.34582045732338834,
-              "net_profit_pct": -0.8645511433084708
+              "sell_fee": 0.32007752574610315,
+              "net_profit": -0.3503868074832078,
+              "net_profit_pct": -0.8759670187080194
             }
           },
           "SOL/USDT": {
-            "samples": 159,
-            "positive_samples": 15,
-            "max_gross_spread_pct": 0.03146633102580358,
-            "mean_gross_spread_pct": -0.010211311991486212,
-            "median_gross_spread_pct": -0.01047559187093118,
-            "p95_gross_spread_pct": 0.01048503822464947,
+            "samples": 120,
+            "positive_samples": 7,
+            "max_gross_spread_pct": 0.03197271661515628,
+            "mean_gross_spread_pct": -0.011806687467201786,
+            "median_gross_spread_pct": -0.010655301012243906,
+            "p95_gross_spread_pct": 0.010641298781184734,
             "best_trade": {
               "buy_exchange": "OKX",
               "sell_exchange": "Kraken",
-              "buy_price": 95.34,
-              "sell_price": 95.37,
-              "quantity": 0.4195510803440319,
+              "buy_price": 93.83,
+              "sell_price": 93.86,
+              "quantity": 0.4263028882020676,
               "capital_used": 40.0,
-              "gross_spread_pct": 0.03146633102580358,
-              "gross_profit": 0.01258653241032448,
+              "gross_spread_pct": 0.03197271661515628,
+              "gross_profit": 0.012789086646058934,
               "buy_fee": 0.04,
-              "sell_fee": 0.3201006922592826,
-              "net_profit": -0.3475141598489581,
-              "net_profit_pct": -0.8687853996223953
+              "sell_fee": 0.32010231269316847,
+              "net_profit": -0.3473132260471095,
+              "net_profit_pct": -0.8682830651177738
             }
           }
         }
       },
       "kraken_to_okx": {
-        "samples": 477,
-        "positive_samples": 72,
-        "max_gross_spread_pct": 0.056087197582579094,
-        "mean_gross_spread_pct": -0.01054375829960118,
-        "median_gross_spread_pct": -0.010147215806926896,
-        "p95_gross_spread_pct": 0.00820161296494956,
+        "samples": 360,
+        "positive_samples": 49,
+        "max_gross_spread_pct": 0.04266211604094714,
+        "mean_gross_spread_pct": -0.009203144211268442,
+        "median_gross_spread_pct": -0.00903387025833078,
+        "p95_gross_spread_pct": 0.007924352608508552,
         "best_trade": {
           "buy_exchange": "Kraken",
           "sell_exchange": "OKX",
-          "buy_price": 77736.1,
-          "sell_price": 77779.7,
-          "quantity": 0.0005145614457118378,
+          "buy_price": 93.76,
+          "sell_price": 93.8,
+          "quantity": 0.4266211604095563,
           "capital_used": 40.0,
-          "gross_spread_pct": 0.056087197582579094,
-          "gross_profit": 0.022434879033035315,
+          "gross_spread_pct": 0.04266211604094714,
+          "gross_profit": 0.017064846416374735,
           "buy_fee": 0.32,
-          "sell_fee": 0.040022434879033036,
-          "net_profit": -0.33758755584599776,
-          "net_profit_pct": -0.8439688896149943
+          "sell_fee": 0.04001706484641637,
+          "net_profit": -0.34295221843004164,
+          "net_profit_pct": -0.8573805460751042
         },
         "thresholds": {
           "0.00%": {
-            "count": 86,
-            "max_net_profit": -0.33758755584599776
+            "count": 62,
+            "max_net_profit": -0.34295221843004164
           },
           "0.01%": {
-            "count": 22,
-            "max_net_profit": -0.33758755584599776
+            "count": 15,
+            "max_net_profit": -0.34295221843004164
           },
           "0.02%": {
-            "count": 9,
-            "max_net_profit": -0.33758755584599776
+            "count": 7,
+            "max_net_profit": -0.34295221843004164
           },
           "0.05%": {
-            "count": 1,
-            "max_net_profit": -0.33758755584599776
+            "count": 0,
+            "max_net_profit": null
           },
           "0.10%": {
             "count": 0,
@@ -442,69 +442,69 @@
         },
         "by_pair": {
           "BTC/USDT": {
-            "samples": 159,
-            "positive_samples": 30,
-            "max_gross_spread_pct": 0.056087197582579094,
-            "mean_gross_spread_pct": -0.008147509819592296,
-            "median_gross_spread_pct": -0.007584190946782349,
-            "p95_gross_spread_pct": 0.0049284446216481155,
+            "samples": 120,
+            "positive_samples": 33,
+            "max_gross_spread_pct": 0.026066624216530995,
+            "mean_gross_spread_pct": -0.00412732070483787,
+            "median_gross_spread_pct": -0.004025540104215919,
+            "p95_gross_spread_pct": 0.009488158622286613,
             "best_trade": {
               "buy_exchange": "Kraken",
               "sell_exchange": "OKX",
-              "buy_price": 77736.1,
-              "sell_price": 77779.7,
-              "quantity": 0.0005145614457118378,
-              "capital_used": 40.0,
-              "gross_spread_pct": 0.056087197582579094,
-              "gross_profit": 0.022434879033035315,
-              "buy_fee": 0.32,
-              "sell_fee": 0.040022434879033036,
-              "net_profit": -0.33758755584599776,
-              "net_profit_pct": -0.8439688896149943
+              "buy_price": 77110.1,
+              "sell_price": 77130.2,
+              "quantity": 0.0005187387903789517,
+              "capital_used": 40.00000000000001,
+              "gross_spread_pct": 0.026066624216530995,
+              "gross_profit": 0.010426649686607448,
+              "buy_fee": 0.32000000000000006,
+              "sell_fee": 0.04001042664968662,
+              "net_profit": -0.34958377696307924,
+              "net_profit_pct": -0.873959442407698
             }
           },
           "ETH/USDT": {
-            "samples": 159,
-            "positive_samples": 33,
-            "max_gross_spread_pct": 0.04262315045972851,
-            "mean_gross_spread_pct": -0.0062202682044826315,
-            "median_gross_spread_pct": -0.006091716889491827,
-            "p95_gross_spread_pct": 0.008572321527519512,
+            "samples": 120,
+            "positive_samples": 9,
+            "max_gross_spread_pct": 0.017647034682572373,
+            "mean_gross_spread_pct": -0.008126011870280874,
+            "median_gross_spread_pct": -0.007798007001989913,
+            "p95_gross_spread_pct": 0.0012733279205201285,
             "best_trade": {
               "buy_exchange": "Kraken",
               "sell_exchange": "OKX",
-              "buy_price": 2463.45,
-              "sell_price": 2464.5,
-              "quantity": 0.016237390651322334,
+              "buy_price": 2436.67,
+              "sell_price": 2437.1,
+              "quantity": 0.016415846216352645,
               "capital_used": 40.0,
-              "gross_spread_pct": 0.04262315045972851,
-              "gross_profit": 0.017049260183888748,
+              "gross_spread_pct": 0.017647034682572373,
+              "gross_profit": 0.00705881387303009,
               "buy_fee": 0.32,
-              "sell_fee": 0.04001704926018389,
-              "net_profit": -0.34296778907629516,
-              "net_profit_pct": -0.8574194726907378
+              "sell_fee": 0.04000705881387303,
+              "net_profit": -0.3529482449408429,
+              "net_profit_pct": -0.8823706123521072
             }
           },
           "SOL/USDT": {
-            "samples": 159,
-            "positive_samples": 9,
-            "max_gross_spread_pct": 0.04191993292809897,
-            "mean_gross_spread_pct": -0.017263496874728612,
-            "median_gross_spread_pct": -0.020944601528951747,
-            "p95_gross_spread_pct": 0.010473617000240621,
+            "samples": 120,
+            "positive_samples": 7,
+            "max_gross_spread_pct": 0.04266211604094714,
+            "mean_gross_spread_pct": -0.01535610005868658,
+            "median_gross_spread_pct": -0.021283388315415583,
+            "p95_gross_spread_pct": 0.010639091267669824,
             "best_trade": {
               "buy_exchange": "Kraken",
               "sell_exchange": "OKX",
-              "buy_price": 95.42,
-              "sell_price": 95.46,
-              "quantity": 0.4191993292810731,
+              "buy_price": 93.76,
+              "sell_price": 93.8,
+              "quantity": 0.4266211604095563,
               "capital_used": 40.0,
-              "gross_spread_pct": 0.04191993292809897,
-              "gross_profit": 0.01676797317123402,
+              "gross_spread_pct": 0.04266211604094714,
+              "gross_profit": 0.017064846416374735,
               "buy_fee": 0.32,
-              "sell_fee": 0.04001676797317123,
-              "net_profit": -0.3432487948019372,
-              "net_profit_pct": -0.858121987004843
+              "sell_fee": 0.04001706484641637,
+              "net_profit": -0.34295221843004164,
+              "net_profit_pct": -0.8573805460751042
             }
           }
         }
