@@ -4,7 +4,7 @@ Capital de prueba: **40.00 €**
 
 El análisis utiliza únicamente el primer nivel del libro recogido por Atlas. No se descuenta slippage.
 
-Total de muestras: **501**
+Total de muestras: **528**
 
 ## OKX standard EEA + Kraken Tier 1
 
@@ -14,28 +14,28 @@ Total de muestras: **501**
 
 ### OKX TO KRAKEN
 
-- Muestras: **501**
-- Muestras con spread positivo: **120**
-- Spread máximo: **0.029711%**
-- Spread medio: **-0.006134%**
-- Spread mediano: **-0.005753%**
-- Percentil 95: **0.011627%**
+- Muestras: **528**
+- Muestras con spread positivo: **113**
+- Spread máximo: **0.020669%**
+- Spread medio: **-0.003378%**
+- Spread mediano: **-0.002607%**
+- Percentil 95: **0.009894%**
 
 **Mejor oportunidad bruta:**
 
-- Compra: OKX @ 2322.35
-- Venta: Kraken @ 2323.04
+- Compra: OKX @ 2322.33
+- Venta: Kraken @ 2322.81
 - Capital utilizado: 40.0000 €
-- Spread bruto: 0.029711%
-- Beneficio bruto: 0.011885 €
-- Beneficio neto: -0.448211 €
-- Rentabilidad neta: -1.120526%
+- Spread bruto: 0.020669%
+- Beneficio bruto: 0.008268 €
+- Beneficio neto: -0.451799 €
+- Rentabilidad neta: -1.129496%
 
 | Umbral bruto | Nº muestras | Mejor neto (€) |
 |---:|---:|---:|
-| 0.00% | 157 | -0.045999 |
-| 0.01% | 29 | -0.448211 |
-| 0.02% | 9 | -0.448211 |
+| 0.00% | 206 | -0.092001 |
+| 0.01% | 22 | -0.451799 |
+| 0.02% | 1 | -0.451799 |
 | 0.05% | 0 | — |
 | 0.10% | 0 | — |
 | 0.20% | 0 | — |
@@ -44,34 +44,34 @@ Total de muestras: **501**
 
 | Par | Muestras | Positivas | Máx. bruto | Mediana |
 |---|---:|---:|---:|---:|
-| BTC/USDT | 167 | 43 | 0.021122% | -0.004624% |
-| ETH/USDT | 167 | 61 | 0.029711% | -0.002154% |
-| SOL/USDT | 167 | 16 | 0.019794% | -0.009884% |
+| BTC/USDT | 176 | 39 | 0.019973% | -0.004990% |
+| ETH/USDT | 176 | 62 | 0.020669% | -0.001939% |
+| SOL/USDT | 176 | 12 | 0.019800% | 0.000000% |
 
 ### KRAKEN TO OKX
 
-- Muestras: **501**
-- Muestras con spread positivo: **186**
-- Spread máximo: **0.040542%**
-- Spread medio: **-0.002716%**
-- Spread mediano: **-0.001724%**
-- Percentil 95: **0.016985%**
+- Muestras: **528**
+- Muestras con spread positivo: **146**
+- Spread máximo: **0.027587%**
+- Spread medio: **-0.006958%**
+- Spread mediano: **-0.004615%**
+- Percentil 95: **0.006745%**
 
 **Mejor oportunidad bruta:**
 
-- Compra: Kraken @ 2318.59
-- Venta: OKX @ 2319.53
+- Compra: Kraken @ 2319.92
+- Venta: OKX @ 2320.56
 - Capital utilizado: 40.0000 €
-- Spread bruto: 0.040542%
-- Beneficio bruto: 0.016217 €
-- Beneficio neto: -0.443840 €
-- Rentabilidad neta: -1.109600%
+- Spread bruto: 0.027587%
+- Beneficio bruto: 0.011035 €
+- Beneficio neto: -0.449004 €
+- Rentabilidad neta: -1.122509%
 
 | Umbral bruto | Nº muestras | Mejor neto (€) |
 |---:|---:|---:|
-| 0.00% | 229 | -0.009613 |
-| 0.01% | 58 | -0.025162 |
-| 0.02% | 15 | -0.054617 |
+| 0.00% | 160 | -0.126899 |
+| 0.01% | 11 | -0.449004 |
+| 0.02% | 1 | -0.449004 |
 | 0.05% | 0 | — |
 | 0.10% | 0 | — |
 | 0.20% | 0 | — |
@@ -80,9 +80,9 @@ Total de muestras: **501**
 
 | Par | Muestras | Positivas | Máx. bruto | Mediana |
 |---|---:|---:|---:|---:|
-| BTC/USDT | 167 | 87 | 0.024981% | 0.000250% |
-| ETH/USDT | 167 | 79 | 0.040542% | 0.000000% |
-| SOL/USDT | 167 | 20 | 0.039561% | -0.009883% |
+| BTC/USDT | 176 | 90 | 0.014867% | 0.000187% |
+| ETH/USDT | 176 | 55 | 0.027587% | -0.003015% |
+| SOL/USDT | 176 | 1 | 0.009885% | -0.019771% |
 
 ## OKX X-Perps standard + Kraken Tier 1
 
@@ -92,28 +92,28 @@ Total de muestras: **501**
 
 ### OKX TO KRAKEN
 
-- Muestras: **501**
-- Muestras con spread positivo: **120**
-- Spread máximo: **0.029711%**
-- Spread medio: **-0.006134%**
-- Spread mediano: **-0.005753%**
-- Percentil 95: **0.011627%**
+- Muestras: **528**
+- Muestras con spread positivo: **113**
+- Spread máximo: **0.020669%**
+- Spread medio: **-0.003378%**
+- Spread mediano: **-0.002607%**
+- Percentil 95: **0.009894%**
 
 **Mejor oportunidad bruta:**
 
-- Compra: OKX @ 2322.35
-- Venta: Kraken @ 2323.04
+- Compra: OKX @ 2322.33
+- Venta: Kraken @ 2322.81
 - Capital utilizado: 40.0000 €
-- Spread bruto: 0.029711%
-- Beneficio bruto: 0.011885 €
-- Beneficio neto: -0.348211 €
-- Rentabilidad neta: -0.870526%
+- Spread bruto: 0.020669%
+- Beneficio bruto: 0.008268 €
+- Beneficio neto: -0.351799 €
+- Rentabilidad neta: -0.879496%
 
 | Umbral bruto | Nº muestras | Mejor neto (€) |
 |---:|---:|---:|
-| 0.00% | 157 | -0.035999 |
-| 0.01% | 29 | -0.348211 |
-| 0.02% | 9 | -0.348211 |
+| 0.00% | 206 | -0.072001 |
+| 0.01% | 22 | -0.351799 |
+| 0.02% | 1 | -0.351799 |
 | 0.05% | 0 | — |
 | 0.10% | 0 | — |
 | 0.20% | 0 | — |
@@ -122,34 +122,34 @@ Total de muestras: **501**
 
 | Par | Muestras | Positivas | Máx. bruto | Mediana |
 |---|---:|---:|---:|---:|
-| BTC/USDT | 167 | 43 | 0.021122% | -0.004624% |
-| ETH/USDT | 167 | 61 | 0.029711% | -0.002154% |
-| SOL/USDT | 167 | 16 | 0.019794% | -0.009884% |
+| BTC/USDT | 176 | 39 | 0.019973% | -0.004990% |
+| ETH/USDT | 176 | 62 | 0.020669% | -0.001939% |
+| SOL/USDT | 176 | 12 | 0.019800% | 0.000000% |
 
 ### KRAKEN TO OKX
 
-- Muestras: **501**
-- Muestras con spread positivo: **186**
-- Spread máximo: **0.040542%**
-- Spread medio: **-0.002716%**
-- Spread mediano: **-0.001724%**
-- Percentil 95: **0.016985%**
+- Muestras: **528**
+- Muestras con spread positivo: **146**
+- Spread máximo: **0.027587%**
+- Spread medio: **-0.006958%**
+- Spread mediano: **-0.004615%**
+- Percentil 95: **0.006745%**
 
 **Mejor oportunidad bruta:**
 
-- Compra: Kraken @ 2318.59
-- Venta: OKX @ 2319.53
+- Compra: Kraken @ 2319.92
+- Venta: OKX @ 2320.56
 - Capital utilizado: 40.0000 €
-- Spread bruto: 0.040542%
-- Beneficio bruto: 0.016217 €
-- Beneficio neto: -0.343799 €
-- Rentabilidad neta: -0.859499%
+- Spread bruto: 0.027587%
+- Beneficio bruto: 0.011035 €
+- Beneficio neto: -0.348976 €
+- Rentabilidad neta: -0.872440%
 
 | Umbral bruto | Nº muestras | Mejor neto (€) |
 |---:|---:|---:|
-| 0.00% | 229 | -0.007519 |
-| 0.01% | 58 | -0.019617 |
-| 0.02% | 15 | -0.042488 |
+| 0.00% | 160 | -0.099313 |
+| 0.01% | 11 | -0.348976 |
+| 0.02% | 1 | -0.348976 |
 | 0.05% | 0 | — |
 | 0.10% | 0 | — |
 | 0.20% | 0 | — |
@@ -158,6 +158,6 @@ Total de muestras: **501**
 
 | Par | Muestras | Positivas | Máx. bruto | Mediana |
 |---|---:|---:|---:|---:|
-| BTC/USDT | 167 | 87 | 0.024981% | 0.000250% |
-| ETH/USDT | 167 | 79 | 0.040542% | 0.000000% |
-| SOL/USDT | 167 | 20 | 0.039561% | -0.009883% |
+| BTC/USDT | 176 | 90 | 0.014867% | 0.000187% |
+| ETH/USDT | 176 | 55 | 0.027587% | -0.003015% |
+| SOL/USDT | 176 | 1 | 0.009885% | -0.019771% |
